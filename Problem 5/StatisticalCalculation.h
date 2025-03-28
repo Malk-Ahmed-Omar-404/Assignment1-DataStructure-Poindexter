@@ -4,6 +4,8 @@
 #include <limits>
 #include <type_traits>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 using namespace std;
 template <typename T>
 
@@ -24,12 +26,13 @@ public:
 	void inputData();
 	void statisticMenu();
 	void readFromFile();
+	void setData(int i , T value);
 };
 
 template<typename T>
 StatisticalCalculation<T>::StatisticalCalculation(int size){
 	this->size = size;
-	data = new T[size];
+	data = new T[size]();
 }
 
 template<typename T>
@@ -57,6 +60,9 @@ void StatisticalCalculation<T>::sort(){
 template<typename T>
 double StatisticalCalculation<T>::findMedian(){
 	sort();
+	if (size == 0) {
+		return -1;
+	}
 	int index = (size / 2);
 	if (size % 2 == 0) {
 		return ((data[index]) + (data[index - 1])) / 2.0;
@@ -68,6 +74,9 @@ double StatisticalCalculation<T>::findMedian(){
 
 template<typename T>
 T StatisticalCalculation<T>::findMin(){
+	if (size == 0) {
+		return -1;
+	}
 	T min = data[0];
 	for (int i = 1; i < size; i++) {
 		if (data[i] < min) {
@@ -79,6 +88,9 @@ T StatisticalCalculation<T>::findMin(){
 
 template<typename T>
 T StatisticalCalculation<T>::findMax(){
+	if (size == 0) {
+		return -1;
+	}
 	T max = data[0];
 	for (int i = 1; i < size; i++) {
 		if (data[i] > max) {
@@ -90,6 +102,9 @@ T StatisticalCalculation<T>::findMax(){
 
 template<typename T>
 T StatisticalCalculation<T>::findSummation(){
+	if (size == 0) {
+		return 0;
+	}
 	T sum = 0;
 	for (int i = 0; i < size; i++) {
 		sum += data[i];
@@ -99,6 +114,9 @@ T StatisticalCalculation<T>::findSummation(){
 
 template<typename T>
 double StatisticalCalculation<T>::findMean(){
+	if (size == 0) {
+		return - 1;
+	}
 	T sum = findSummation();
 	double mean = sum / size;
 	return mean;
@@ -145,34 +163,67 @@ void StatisticalCalculation<T>::inputData(){
 template<typename T>
 void StatisticalCalculation<T>::statisticMenu(){
 	while (true) {
-		cout << "Select a statistical calculation:\n1. Find Median\n2. Find Minimum\n3. Find Maximum\n4. Find Mean\n5. Find Summation\nEnter your choice(1 - 5) :\n";
+		while (true) {
+			cout << "Select a statistical calculation:\n1. Find Median\n2. Find Minimum\n3. Find Maximum\n4. Find Mean\n5. Find Summation\nEnter your choice(1 - 5) :\n";
+			string choice;
+			getline(cin, choice);
+			if (choice == "1") {
+				cout << "Median: " << findMedian() << endl;
+				cout << "Sorted Array: ";
+				displayArray();
+				break;
+			}
+			else if (choice == "2") {
+				cout << "Minimum: " << findMin() << endl;
+				break;
+			}
+			else if (choice == "3") {
+				cout << "Maximum: " << findMax() << endl;
+				break;
+			}
+			else if (choice == "4") {
+				cout << "Mean " << findMean() << endl;
+				break;
+			}
+			else if (choice == "5") {
+				cout << "Summation: " << findSummation() << endl;
+				break;
+			}
+			else {
+				cout << "Inavlid input. Please try again!\n";
+				continue;
+			}
+		}
 		string choice;
-		getline(cin, choice);
-		if (choice == "1") {
-			cout << "Median: " << findMedian() << endl;
-			cout << "Sorted Array: ";
-			displayArray();
+		while (true) {
+			cout << "Do you want to sort another dataset? (y/n): ";
+			getline(cin, choice);
+			if (choice != "y" and choice != "Y" and choice != "n" and choice != "N") {
+				cout << "Invalid choice. PLease try again.\n";
+				continue;
+			}
+			break;
 		}
-		else if (choice == "2") {
-			cout << "Minimum: " << findMin() << endl;
+		if (choice == "y") {
+			break;
 		}
-		else if (choice == "3") {
-			cout << "Maximum: " << findMax() << endl;
+		else if (choice == "n") {
+			cout << "Thank you for using the Statistical Calculation system! Goodbye!";
+			exit(0);
 		}
-		else if (choice == "4") {
-			cout << "Mean " << findMean() << endl;
-		}
-		else if (choice == "5") {
-			cout << "Summation: " << findSummation() << endl;
-		}
-		else {
-			cout << "Inavlid input. Please try again!\n";
-		}
+
 	}
 }
 
 template<typename T>
-void StatisticalCalculation<T>::readFromFile(){
+inline void StatisticalCalculation<T>::setData(int i , T value){
+		if (i >= 0 && i < size) {
+			data[i] = value;
+		}
+	}
+
+template<typename T>
+void StatisticalCalculation<T>::readFromFile() {
 	string filename;
 	ifstream inputFile;
 	while (true) {
@@ -180,20 +231,14 @@ void StatisticalCalculation<T>::readFromFile(){
 		cout << "Use the Testcases default file? (enter Y or N):";
 		getline(cin, ch);
 		if (ch == "y" or ch == "Y") {
-			inputFile.open("Testcases.txt");
+			inputFile.open("Testcases.txt",ios::in);
 			filename = "Testcases.txt";
 			break;
 		}
 		else if (ch == "n" or ch == "N") {
 			while (true) {
-				cout << "Enter the name of the file (with extension) :";
+				cout << "Enter the name of the file (with extension): ";
 				getline(cin, filename);
-				if (cin.fail()) {
-					cin.clear();
-					fflush(stdin);
-					cout << endl;
-					continue;
-				}
 				inputFile.open(filename);
 				if (inputFile.is_open()) {
 					break;
@@ -207,9 +252,78 @@ void StatisticalCalculation<T>::readFromFile(){
 			continue;
 		}
 	}
-	for (int i = 0; i < size; ++i) {
-		inputFile >> data[i];
+	int counter = 1;
+	string numElements, dataType, dataInput, choice, continueOP;
+	while (getline(inputFile, numElements) && getline(inputFile, dataType) && getline(inputFile, dataInput) && getline(inputFile, choice) && getline(inputFile, continueOP)){
+		cout << "Testcase #" << counter << endl;
+		int size = stoi(numElements);
+		cout << "Number of elements: " << size << endl;
+
+		stringstream dataStream(dataInput);
+
+		if (dataType == "1") {
+			cout << "Data type: Integer" << endl;
+			StatisticalCalculation<int> arr(size);
+			for (int i = 0; i < size; i++) {
+				int value;
+				dataStream >> value;
+				arr.setData(i, value);
+			}
+
+			cout << "Data loaded: ";
+			arr.displayArray();
+			
+			if (choice == "1") cout << "Median: " << arr.findMedian() << endl;
+			else if (choice == "2") cout << "Minimum: " << arr.findMin() << endl;
+			else if (choice == "3") cout << "Maximum: " << arr.findMax() << endl;
+			else if (choice == "4") cout << "Mean: " << arr.findMean() << endl;
+			else if (choice == "5") cout << "Summation: " << arr.findSummation() << endl;
+		}
+
+		else if (dataType == "2") {
+			cout << "Data type: Float" << endl;
+			StatisticalCalculation<float> arr(size);
+			for (int i = 0; i < size; ++i) {
+				float value;
+				dataStream >> value;
+				arr.setData(i, value);
+			}
+
+			cout << "Data loaded: ";
+			arr.displayArray();
+
+			if (choice == "1") cout << "Median: " << arr.findMedian() << endl;
+			else if (choice == "2") cout << "Minimum: " << arr.findMin() << endl;
+			else if (choice == "3") cout << "Maximum: " << arr.findMax() << endl;
+			else if (choice == "4") cout << "Mean: " << arr.findMean() << endl;
+			else if (choice == "5") cout << "Summation: " << arr.findSummation() << endl;
+		}
+
+		else if (dataType == "3") {
+			cout << "Data type: Double" << endl;
+			StatisticalCalculation<double> arr(size);
+			for (int i = 0; i < size; ++i) {
+				double value;
+				dataStream >> value;
+				arr.setData(i, value);
+			}
+
+			cout << "Data loaded: ";
+			arr.displayArray();
+
+			if (choice == "1") cout << "Median: " << arr.findMedian() << endl;
+			else if (choice == "2") cout << "Minimum: " << arr.findMin() << endl;
+			else if (choice == "3") cout << "Maximum: " << arr.findMax() << endl;
+			else if (choice == "4") cout << "Mean: " << arr.findMean() << endl;
+			else if (choice == "5") cout << "Summation: " << arr.findSummation() << endl;
+		}
+
+		counter++;
+		if (continueOP == "n" || continueOP == "N") {
+			cout << "Thank you for using the Statistical Calculation system! Goodbye!";
+			break;
+		}
 	}
+
 	inputFile.close();
 }
-
