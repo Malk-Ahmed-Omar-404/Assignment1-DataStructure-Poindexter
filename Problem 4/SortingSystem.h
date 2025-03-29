@@ -6,7 +6,7 @@
 using namespace std;
 
 template <typename T>
-class SortingSystem{
+class SortingSystem {
 private:
 	T* data;
 	int size;
@@ -27,57 +27,58 @@ public:
 	int partition(int low, int high);
 
 	void displayData();
-	void measureSortTime(void(SortingSystem::*sortFunc)());
+	void measureSortTime(void(SortingSystem::* sortFunc)());
 	void readFromFile();
 	void setData(int i, T value);
 
 	void showMenu();
-	
+
 };
 
 template<typename T>
-SortingSystem<T>::SortingSystem(int n){
+SortingSystem<T>::SortingSystem(int n) {
 	size = n;
 	data = new T[size];
 }
 
 template<typename T>
-SortingSystem<T>::~SortingSystem(){
+SortingSystem<T>::~SortingSystem() {
 	delete[] data;
 }
 
 template<typename T>
-void SortingSystem<T>::insertionSort(){
+void SortingSystem<T>::insertionSort() {
 
 }
 
 template<typename T>
-void SortingSystem<T>::selectionSort(){
+void SortingSystem<T>::selectionSort() {
 }
 
 template<typename T>
-void SortingSystem<T>::bubbleSort(){
+void SortingSystem<T>::bubbleSort() {
 }
 
 template<typename T>
-void SortingSystem<T>::shellSort(){
+void SortingSystem<T>::shellSort() {
 }
 
 template<typename T>
-void SortingSystem<T>::mergeSort(int left, int right){
+void SortingSystem<T>::mergeSort(int left, int right) {
 }
 
 template<typename T>
-inline void SortingSystem<T>::quickSort(int left, int right){
+inline void SortingSystem<T>::quickSort(int left, int right) {
 }
 
 template<typename T>
 void SortingSystem<T>::countSort() {}
 
-void SortingSystem<int>::countSort(){
+void SortingSystem<int>::countSort() {
 	if (size == 0) {
-		cout << "Your data is empty.It is already considered sorted.\n";
-		return;}
+		cout << "Your data is empty. It is already considered sorted.\n";
+		return;
+	}
 	for (int i = 0; i < size; i++) {
 		if (data[i] < 0) {
 			cout << "Count sort can't be applied on negative values.\n";
@@ -97,60 +98,85 @@ void SortingSystem<int>::countSort(){
 
 	int M = data[0];
 	for (int i = 0; i < size; i++) {
-		M = max(M, data[i]); }
+		M = max(M, data[i]);
+	}
 
 	int* countArray = new int[M + 1]();
 
 	for (int i = 0; i < size; i++) {
-		countArray[data[i]]++;}
-
-	cout << "Count array after counting elements: [";
+		countArray[data[i]]++;
+	}
+	string elements = "Count array after counting elements: [";
 	for (int i = 0; i <= M; i++) {
-		if (i != M) cout << countArray[i] << " ";
-		else cout << countArray[i];}
-	cout << "]" << endl;
+		if (i != M) elements += to_string(countArray[i]) + " ";
+		else elements += to_string(countArray[i]);
+	}
+	cout << elements << "]" << endl;
 
 	for (int i = 1; i <= M; i++) {
-		countArray[i] += countArray[i - 1];}
-
-	cout << "Count array after accumalting sums: [";
-	for (int i = 0; i <= M; i++) {
-		if (i != M) cout << countArray[i] << " ";
-		else cout << countArray[i];
+		countArray[i] += countArray[i - 1];
 	}
-	cout << "]" << endl;
+
+	string accumalated = "Count array after accumalating sums: [";
+	for (int i = 0; i <= M; i++) {
+		if (i != M) accumalated += to_string(countArray[i]) + " ";
+		else accumalated += to_string(countArray[i]);
+	}
+	cout << accumalated << "]" << endl;
 
 	int* outputArray = new int[size]();
 	for (int i = size - 1; i >= 0; i--) {
 		outputArray[countArray[data[i]] - 1] = data[i];
 		countArray[data[i]]--;
 		cout << "Step " << size - i << ": [";
+		string step = "";
 		for (int j = 0; j < size; j++) {
-			if (j != size - 1) cout << outputArray[j] << " ";
-			else cout << outputArray[j];
+			if (j != size - 1) step += to_string(outputArray[j]) + " ";
+			else step += to_string(outputArray[j]);
 		}
-		cout<<"]" << endl; }
+		cout << step << "]" << endl;
+	}
 
 	for (int i = 0; i < size; i++) {
-		data[i] = outputArray[i];}
+		data[i] = outputArray[i];
+	}
 
 	cout << "Sorted data : ";
 	displayData();
 	delete[] countArray;
 	delete[] outputArray;
-	countArray= nullptr;
+	countArray = nullptr;
 	outputArray = nullptr;
 }
 
 template<typename T>
 void SortingSystem<T>::radixSort() {}
 
-void SortingSystem<int>::radixSort(){
+void SortingSystem<int>::radixSort() {
+	if (size == 0) {
+		cout << "Your data is empty. It is already considered sorted.\n";
+		return;
+	}
+	for (int i = 0; i < size; i++) {
+		if (data[i] < 0) {
+			cout << "Radix sort can't be applied on negative values.\n";
+			return;
+		}
+	}
+	if (size == 1) {
+		cout << "Your data has only one element. It is already considered sorted.\n";
+		cout << "Initial data : ";
+		displayData();
+		cout << "Sorted data : ";
+		displayData();
+		return;
+	}
 	cout << "Initial data : ";
 	displayData();
 	int largest = data[0];
 	for (int i = 1; i < size; i++) {
-		largest = max(largest, data[i]);}
+		largest = max(largest, data[i]);
+	}
 
 	for (int exp = 1; largest / exp > 0; exp *= 10) {
 		cout << "Sorting by digit place: " << exp << endl;
@@ -159,54 +185,57 @@ void SortingSystem<int>::radixSort(){
 
 
 		for (int i = 0; i < size; i++) {
-		tempData[i] = (data[i] / exp) % 10;}
+			tempData[i] = (data[i] / exp) % 10;
+		}
 
 		cout << "Digits extracted for exp = " << exp << ": [";
+		string numbers = "";
 		for (int i = 0; i < size; i++) {
-			if (i != size - 1) cout << tempData[i] << " ";
-			else cout << tempData[i];
+			if (i != size - 1) numbers += to_string(tempData[i]) + " ";
+			else  numbers += to_string(tempData[i]);
 		}
-		cout << "]" << endl;
+		cout << numbers << "]" << endl;
 
-		
+
 		int* countArray = new int[10]();
 
-		
+
 		for (int i = 0; i < size; i++) {
 			countArray[tempData[i]]++;
 		}
 
-		cout << "Count array after counting digits: [";
+		string count = "Count array after counting digits: [";
 		for (int i = 0; i < 10; i++) {
-			if (i != 9) cout << countArray[i] << " ";
-			else cout << countArray[i];
+			if (i != 9) count += to_string(countArray[i]) + " ";
+			else count += to_string(countArray[i]);
 		}
-		cout << "]" << endl;
-		
+		cout << count << "]" << endl;
+
 		for (int i = 1; i < 10; i++) {
 			countArray[i] += countArray[i - 1];
 		}
 
-		
+
+		string accum = "Count array after accumulation: [";
+		for (int i = 0; i < 10; i++) {
+			if (i != 9) accum += to_string(countArray[i]) + " ";
+			else accum += to_string(countArray[i]);
+		}
+		cout << accum << "]" << endl;
+
 		int* outputArray = new int[size]();
 		for (int i = size - 1; i >= 0; i--) {
 			outputArray[countArray[tempData[i]] - 1] = data[i];
 			countArray[tempData[i]]--;
 			cout << "Step " << size - i << ": [";
-			for (int j = 0; j < size; j++){
-				if (j != size - 1) cout << outputArray[j] << " ";
-				else cout << outputArray[j];
+			string step = "";
+			for (int j = 0; j < size; j++) {
+				if (j != size - 1) step += to_string(outputArray[j]) + " ";
+				else step += to_string(outputArray[j]);
 			}
-			cout << "]" << endl;
+			cout << step << "]" << endl;
 		}
 
-		cout << "Count array after accumulation: [";
-		for (int i = 0; i < 10; i++) {
-			if (i != 9) cout << countArray[i] << " ";
-			else cout << countArray[i];
-		}
-		cout << "]" << endl;
-		
 		for (int i = 0; i < size; i++) {
 			data[i] = outputArray[i];
 		}
@@ -242,7 +271,7 @@ int SortingSystem<T>::partition(int low, int high)
 }
 
 template<typename T>
-void SortingSystem<T>::displayData(){
+void SortingSystem<T>::displayData() {
 	cout << "[";
 	for (int i = 0; i < size; i++) {
 		if (i != size - 1) {
@@ -257,7 +286,7 @@ void SortingSystem<T>::displayData(){
 }
 
 template<typename T>
-void SortingSystem<T>::measureSortTime(void(SortingSystem::* sortFunc)()){
+void SortingSystem<T>::measureSortTime(void(SortingSystem::* sortFunc)()) {
 	auto start = chrono::high_resolution_clock::now();
 	(this->*sortFunc)();
 	auto end = chrono::high_resolution_clock::now();
@@ -266,7 +295,7 @@ void SortingSystem<T>::measureSortTime(void(SortingSystem::* sortFunc)()){
 }
 
 template<typename T>
-void SortingSystem<T>::readFromFile(){
+void SortingSystem<T>::readFromFile() {
 	string filename;
 	ifstream inputFile;
 	while (true) {
@@ -310,7 +339,8 @@ void SortingSystem<T>::readFromFile(){
 			for (int i = 0; i < size; i++) {
 				int value;
 				dataStream >> value;
-				arr.setData(i, value);}
+				arr.setData(i, value);
+			}
 
 			cout << "Data loaded :";
 			arr.displayData();
@@ -401,14 +431,14 @@ void SortingSystem<T>::readFromFile(){
 }
 
 template<typename T>
-void SortingSystem<T>::setData(int i, T value){
+void SortingSystem<T>::setData(int i, T value) {
 	if (i >= 0 && i < size) {
 		data[i] = value;
 	}
 }
 
 template<typename T>
-void SortingSystem<T>::showMenu(){
+void SortingSystem<T>::showMenu() {
 	for (int i = 0; i < size; i++) {
 		cout << "Enter data " << i + 1 << ":";
 		cin >> data[i];
@@ -501,9 +531,11 @@ void SortingSystem<T>::showMenu(){
 		}
 		if (choice == "y") {
 			cout << "-----------------------------------------------------------------------------------------------------------------------\n";
-			break;}
+			break;
+		}
 		else if (choice == "n") {
-			cout << "Thank you for using the sorting system! Goodbye!"; 
-			exit(0);}
+			cout << "Thank you for using the sorting system! Goodbye!";
+			exit(0);
+		}
 	}
 }
