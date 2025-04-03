@@ -83,7 +83,7 @@ class SortedLinkedList {
             }
         }
 
-        //[1,2,3,4,5]       p-> 2       temp ->3
+        
         void remove(int index) {
             int count = 0;
             Node *p = head;
@@ -99,7 +99,7 @@ class SortedLinkedList {
             }
 
             else {
-                //count = 2         index = 2
+                
                 while (p->next != nullptr) {
                     Node *temp = p->next;
                     if(count == index) {
@@ -188,8 +188,6 @@ int main() {
 
     L.remove(10);
     cout << L;
-
-
 
     return 0;
 }
