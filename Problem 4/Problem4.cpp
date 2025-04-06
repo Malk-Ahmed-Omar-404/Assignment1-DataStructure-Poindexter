@@ -1,3 +1,12 @@
+/*
+* Assignment 1 Data structure
+* Authors: Asrar Abdelgaber -  Anan Hamdi - Nourhan Ahmed - Malk Ahmed
+* IDs: 20230783 - 20231117 - 20231194 - 20230413
+* TA: Eng. Mennato Allah Youssef
+* Section: 7,8
+* Team: Poin(dex)ter
+*/
+
 #include <iostream>
 #include <string>
 #include <chrono>
@@ -187,6 +196,14 @@ void SortingSystem<T>::bubbleSort() {
 template<typename T>
 void SortingSystem<T>::shellSort() {
 	cout << "Sorting usind Shell sort..." << endl;
+	if (size == 1) {
+		cout << "The data is already sorted" << endl;
+		return;
+	}
+	else if (size == 0) {
+		cout << "The array is empty" << endl;
+		return;
+	}
 
 	for (int gap = size / 2; gap > 0; gap /= 2) {
 		cout << "Current gap: " << gap << endl;
@@ -267,6 +284,7 @@ template<typename T>
 void SortingSystem<T>::countSort() {}
 
 void SortingSystem<int>::countSort() {
+	cout << "Sorting using Count Sort... " << endl;
 	if (size == 0) {
 		cout << "Your data is empty. It is already considered sorted.\n";
 		return;
@@ -291,6 +309,14 @@ void SortingSystem<int>::countSort() {
 	int M = data[0];
 	for (int i = 0; i < size; i++) {
 		M = max(M, data[i]);
+	}
+	int N = data[0];
+	for (int i = 0; i < size; i++) {
+		N = min(N, data[i]);
+	}
+	if((M-N) == 0){
+		cout << "Your data is identical. Your data is already sorted.\n";
+		return;
 	}
 
 	int* countArray = new int[M + 1]();
@@ -345,6 +371,7 @@ template<typename T>
 void SortingSystem<T>::radixSort() {}
 
 void SortingSystem<int>::radixSort() {
+	cout << "Sorting using Radix Sort... " << endl;
 	if (size == 0) {
 		cout << "Your data is empty. It is already considered sorted.\n";
 		return;
@@ -368,6 +395,14 @@ void SortingSystem<int>::radixSort() {
 	int largest = data[0];
 	for (int i = 1; i < size; i++) {
 		largest = max(largest, data[i]);
+	}
+	int smallest = data[0];
+	for (int i = 1; i < size; i++) {
+		smallest = min(smallest, data[i]);
+	}
+	if ((largest - smallest) == 0) {
+		cout << "Your data is identical. Your data is already sorted.\n";
+		return;
 	}
 
 	for (int exp = 1; largest / exp > 0; exp *= 10) {
@@ -929,101 +964,108 @@ void SortingSystem<T>::showMenu() {
 				continue;
 			}
 		}
-		if (is_floating_point<T>::value) {
+		if constexpr (is_floating_point<T>::value) {
 			if (cin.fail() || cin.peek() != '\n') {
 				i--;
 				cin.clear();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				continue;
+				continue;}
+			if (data[i] == -0.0) {
+				data[i] = 0.0;
 			}
 		}
+		if (size != 0) {
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
 	}
-	cin.clear();
-	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-	while (true) {
 		while (true) {
-			cout << "1. Insertion Sort" << endl;
-			cout << "2. Selection Sort" << endl;
-			cout << "3. Bubble Sort" << endl;
-			cout << "4. Shell Sort" << endl;
-			cout << "5. Merge Sort" << endl;
-			cout << "6. Quick Sort" << endl;
-			cout << "7. Count Sort" << endl;
-			cout << "8. Radix Sort" << endl;
-			cout << "9. Bucket Sort" << endl;
-			cout << "Enter your choice(1 - 9): ";
+			while (true) {
+				cout << "1. Insertion Sort" << endl;
+				cout << "2. Selection Sort" << endl;
+				cout << "3. Bubble Sort" << endl;
+				cout << "4. Shell Sort" << endl;
+				cout << "5. Merge Sort" << endl;
+				cout << "6. Quick Sort" << endl;
+				cout << "7. Count Sort" << endl;
+				cout << "8. Radix Sort" << endl;
+				cout << "9. Bucket Sort" << endl;
+				cout << "Enter your choice(1 - 9): ";
+				string choice;
+				getline(cin, choice);
+				if (choice == "1") {
+					measureSortTime(&SortingSystem::insertionSort);
+					break;
+				}
+				else if (choice == "2") {
+					measureSortTime(&SortingSystem::selectionSort);
+					break;
+				}
+				else if (choice == "3") {
+					measureSortTime(&SortingSystem::bubbleSort);
+					break;
+				}
+				else if (choice == "4") {
+					measureSortTime(&SortingSystem::shellSort);
+					break;
+				}
+				else if (choice == "5") {
+					measureSortTime(&SortingSystem::mergeWrapper);
+					break;
+				}
+				else if (choice == "6") {
+					measureSortTime(&SortingSystem::quickSortWrapper);
+					break;
+				}
+
+				else if (choice == "7") {
+					if (!is_same<T, int>::value) {
+						cout << "Count sort can't be applied on the data type you have entered.\n";
+						continue;
+					}
+					measureSortTime(&SortingSystem::countSort);
+					break;
+				}
+				else if (choice == "8") {
+					if (!is_same<T, int>::value) {
+						cout << "Radix sort can't be applied on the data type you have entered.\n";
+						continue;
+					}
+					measureSortTime(&SortingSystem::radixSort);
+					break;
+				}
+				else if (choice == "9") {
+					measureSortTime(&SortingSystem::bucketSort);
+					break;
+				}
+				else {
+					cout << "Invalid choice! Please try again." << endl;
+					continue;
+				}
+			}
+
 			string choice;
-			getline(cin, choice);
-			if (choice == "1") {
-				measureSortTime(&SortingSystem::insertionSort);
-			}
-			else if (choice == "2") {
-				measureSortTime(&SortingSystem::selectionSort);
-			}
-			else if (choice == "3") {
-				measureSortTime(&SortingSystem::bubbleSort);
-			}
-			else if (choice == "4") {
-				measureSortTime(&SortingSystem::shellSort);
-			}
-			else if (choice == "5") {
-				measureSortTime(&SortingSystem::mergeWrapper);
-				break;
-			}
-			else if (choice == "6") {
-				measureSortTime(&SortingSystem::quickSortWrapper);
-				break;
-			}
-
-			else if (choice == "7") {
-				if (!is_same<T, int>::value) {
-					cout << "Count sort can't be applied on the data type you have entered.\n";
+			while (true) {
+				cout << "Do you want to sort another dataset? (y/n): ";
+				getline(cin, choice);
+				if (choice != "y" and choice != "Y" and choice != "n" and choice != "N") {
+					cout << "Invalid choice. PLease try again.\n";
 					continue;
 				}
-				cout << "Sorting using Count Sort... " << endl;
-				measureSortTime(&SortingSystem::countSort);
 				break;
 			}
-			else if (choice == "8") {
-				if (!is_same<T, int>::value) {
-					cout << "Radix sort can't be applied on the data type you have entered.\n";
-					continue;
-				}
-				cout << "Sorting using Radix Sort... " << endl;
-				measureSortTime(&SortingSystem::radixSort);
+			if (choice == "y") {
+				cout << "-----------------------------------------------------------------------------------------------------------------------\n";
 				break;
 			}
-			else if (choice == "9") {
-				measureSortTime(&SortingSystem::bucketSort);
-				break;
+			else if (choice == "n") {
+				cout << "Thank you for using the sorting system! Goodbye!";
+				exit(0);
 			}
-			else {
-				cout << "Invalid choice! Please try again." << endl;
-				continue;
-			}
-		}
-
-		string choice;
-		while (true) {
-			cout << "Do you want to sort another dataset? (y/n): ";
-			getline(cin, choice);
-			if (choice != "y" and choice != "Y" and choice != "n" and choice != "N") {
-				cout << "Invalid choice. PLease try again.\n";
-				continue;
-			}
-			break;
-		}
-		if (choice == "y") {
-			cout << "-----------------------------------------------------------------------------------------------------------------------\n";
-			break;
-		}
-		else if (choice == "n") {
-			cout << "Thank you for using the sorting system! Goodbye!";
-			exit(0);
 		}
 	}
-}
+
 
 int main(){
 	string choice;
