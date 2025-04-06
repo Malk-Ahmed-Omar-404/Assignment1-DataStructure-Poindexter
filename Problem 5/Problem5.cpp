@@ -73,9 +73,11 @@ double StatisticalCalculation<T>::findMedian() {
 		return -1;
 	}
 	int index = (size / 2);
+	//even number of elements
 	if (size % 2 == 0) {
 		return ((data[index]) + (data[index - 1])) / 2.0;
 	}
+	//odd number of elements
 	else {
 		return (data[index]);
 	}
@@ -127,7 +129,7 @@ double StatisticalCalculation<T>::findMean() {
 		return -1;
 	}
 	T sum = findSummation();
-	double mean = sum / size;
+	double mean = double(sum) / size;
 	return mean;
 }
 
@@ -149,6 +151,7 @@ void StatisticalCalculation<T>::inputData() {
 	for (int i = 0; i < size; i++) {
 		cout << "Enter element " << i + 1 << ":";
 		cin >> data[i];
+		// Check for invalid input
 		if (is_integral<T>::value) {
 			if (cin.fail() || cin.peek() != '\n') {
 				i--;
@@ -164,14 +167,20 @@ void StatisticalCalculation<T>::inputData() {
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				continue;
 			}
+			if (data[i] == 0) {
+				data[i] = 0.0;
+			}
 		}
 	}
-	cin.clear();
-	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
 template<typename T>
 void StatisticalCalculation<T>::statisticMenu() {
+	// Check if the array is empty so that the user doesn't have to press a key to see the menu
+	if (size != 0) {
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
 	while (true) {
 		while (true) {
 			cout << "Select a statistical calculation:\n1. Find Median\n2. Find Minimum\n3. Find Maximum\n4. Find Mean\n5. Find Summation\nEnter your choice(1 - 5) :";
@@ -192,7 +201,7 @@ void StatisticalCalculation<T>::statisticMenu() {
 				break;
 			}
 			else if (choice == "4") {
-				cout << "Mean " << findMean() << endl;
+				cout << "Mean: " << findMean() << endl;
 				break;
 			}
 			else if (choice == "5") {
@@ -264,6 +273,7 @@ void StatisticalCalculation<T>::readFromFile() {
 		}
 	}
 	int counter = 1;
+	// Read the file line by line, where each line contains the following data in order:
 	string numElements, dataType, dataInput, choice, continueOP;
 	while (getline(inputFile, numElements) && getline(inputFile, dataType) && getline(inputFile, dataInput) && getline(inputFile, choice) && getline(inputFile, continueOP)) {
 		cout << "Testcase #" << counter << endl;
@@ -363,6 +373,7 @@ int main() {
 				if (n.empty()) {
 					numCheck = false;
 				}
+				// Check if the input is a positive integer
 				for (char ch : n) {
 					int v = ch;
 					if (!(ch >= 48 && ch <= 57)) {
@@ -385,7 +396,7 @@ int main() {
 				}
 				break;
 			}
-
+			//initialize the data type based on user input
 			if (choice == "1") {
 				StatisticalCalculation<int> data(stoi(n));
 				data.inputData();
