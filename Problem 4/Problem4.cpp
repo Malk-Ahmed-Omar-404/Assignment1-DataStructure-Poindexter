@@ -282,7 +282,7 @@ void SortingSystem<T>::quickSort(int left, int right) {
 
 template<typename T>
 void SortingSystem<T>::countSort() {}
-
+template<>
 void SortingSystem<int>::countSort() {
 	cout << "Sorting using Count Sort... " << endl;
 	if (size == 0) {
@@ -369,7 +369,7 @@ void SortingSystem<int>::countSort() {
 
 template<typename T>
 void SortingSystem<T>::radixSort() {}
-
+template<>
 void SortingSystem<int>::radixSort() {
 	cout << "Sorting using Radix Sort... " << endl;
 	if (size == 0) {
@@ -570,7 +570,7 @@ void SortingSystem<T>::bucketSort()
 		delete[] bucket_size;
 	}
 }
-
+template<>
 void SortingSystem<string>::bucketSort() {
 	cout << "Sorting using Bucket Sort... \n";
 	cout << "Unsorted data : ";
