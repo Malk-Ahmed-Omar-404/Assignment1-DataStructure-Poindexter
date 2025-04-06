@@ -1,6 +1,6 @@
 //developed by Asrar Abdelgaber
 //11.3.2025
-
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <cstring>
 #include <sstream>
