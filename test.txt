@@ -1,0 +1,14 @@
+1 google.com
+1 youtube.com
+1 instagrame.com
+2
+3
+1 facebook.com
+2
+1 wikipedia.org
+2
+2
+3
+3
+1 snapchat.com
+3
